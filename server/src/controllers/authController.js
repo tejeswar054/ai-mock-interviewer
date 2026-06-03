@@ -104,7 +104,18 @@ const loginUser = async (req, res) => {
         });
     }
 };
+
+// get current logged in user
+const getCurrentUser = async (req, res) => {
+
+    const user = await User.findById(
+        req.user.userId
+    ).select("-password");
+
+    return res.status(200).json(user);
+};
 module.exports = {
     registerUser,
-    loginUser
+    loginUser,
+    getCurrentUser
 };
