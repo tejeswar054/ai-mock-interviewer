@@ -1,6 +1,6 @@
 const express = require("express");
 const protect = require("../middleware/authMiddleware");
-const { startInterview, getInterviewHistory, generateQuestions, submitAnswer } = require("../controllers/interviewController");
+const { startInterview, getInterviewHistory, generateQuestions, submitAnswer, completeInterview } = require("../controllers/interviewController");
 const { route } = require("./authRoutes");
 const router = express.Router();
 
@@ -23,5 +23,10 @@ router.post(
     "/:interviewId/questions/:questionId/answer",
     protect,
     submitAnswer
-)
+);
+router.post(
+    "/:id/complete",
+    protect,
+    completeInterview
+);
 module.exports = router;

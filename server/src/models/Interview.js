@@ -56,7 +56,15 @@ const interviewSchema = new mongoose.Schema({
         default: ""
     },
 
-    questions: [questionSchema]
+    isCompleted: {
+        type: Boolean,
+        default: false
+    },
+
+    questions: {
+        type: [questionSchema],
+        default: []
+    }
 
 }, {
     timestamps: true

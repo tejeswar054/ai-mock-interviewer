@@ -198,9 +198,60 @@ async (req, res) => {
     }
 };
 
+const completeInterview = async (req, res) => {
+
+    try {
+
+        const interview =
+        await Interview.findById(
+            req.params.id
+        );
+
+        if (!interview) {
+            return res.status(404).json({
+                message: "Interview not found"
+            });
+        }
+
+        const totalScore = interview.questions.reduce(
+            (sum, question) =>
+                sum + question.score,
+            0
+        );
+
+        const averageScore = interview.questions.length
+            ? totalScore /
+              interview.questions.length
+            : 0;
+
+        interview.score =Number(
+            averageScore.toFixed(1)
+        );
+
+        interview.isCompleted = true;
+
+        await interview.save();
+
+        return res.status(200).json({
+            success: true,
+            interview
+        });
+
+    } catch (error) {
+
+        console.error(error);
+
+        return res.status(500).json({
+            message: "Server Error"
+        });
+    }
+};
+
+
 module.exports = {
     startInterview,
     getInterviewHistory,
     generateQuestions,
-    submitAnswer
+    submitAnswer,
+    completeInterview
 };
