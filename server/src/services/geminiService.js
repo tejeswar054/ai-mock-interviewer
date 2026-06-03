@@ -49,6 +49,42 @@ const generateInterviewQuestions = async (role, difficulty) => {
     return response.text;
 };
 
+const evaluateAnswer = async (
+    question,
+    answer
+    ) => {
+        const aiClient = getAIClient();
+
+        const prompt = `
+        You are a technical interviewer.
+
+        Question:
+        ${question}
+
+        Candidate Answer:
+        ${answer}
+
+        Evaluate the answer.
+
+        Return ONLY JSON in this format:
+
+        {
+        "score": 8,
+        "feedback": "Good explanation..."
+        }
+
+        Score should be between 0 and 10.
+        `;
+
+        const response = await aiClient.models.generateContent({
+            model: "gemini-2.5-flash",
+            contents: prompt
+    });
+
+    return response.text;
+};
+
 module.exports = {
-    generateInterviewQuestions
+    generateInterviewQuestions,
+    evaluateAnswer
 };
