@@ -1,0 +1,54 @@
+const { GoogleGenAI } = require("@google/genai");
+
+let ai = null;
+
+const getAIClient = () => {
+    if (!ai) {
+        ai = new GoogleGenAI({
+            apiKey: process.env.GEMINI_API_KEY
+        });
+    }
+    return ai;
+};
+
+const generateInterviewQuestions = async (role, difficulty) => {
+    const aiClient = getAIClient();  // ✅ Initialize when needed
+    
+    const prompt = `
+    Generate exactly 5 interview questions.
+
+    Role: ${role}
+    Difficulty: ${difficulty}
+
+    Target Candidate:
+    College Student
+    Internship Candidate
+    Entry Level Software Engineer
+
+    Rules:
+
+    1. Questions should be realistic placement interview questions.
+    2. Mix fundamentals and practical questions.
+    3. Do not ask architect-level questions.
+    4. Keep each question under 30 words.
+    5. Return ONLY a JSON array.
+
+    Example:
+
+    [
+    "What is React?",
+    "What is Virtual DOM?"
+    ]
+    `;
+
+    const response = await aiClient.models.generateContent({
+        model: "gemini-2.5-flash",
+        contents: prompt
+    });
+
+    return response.text;
+};
+
+module.exports = {
+    generateInterviewQuestions
+};
