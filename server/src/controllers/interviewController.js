@@ -31,8 +31,28 @@ const startInterview = async (req, res) => {
         });
     }
 };
-
-// get interview history
+// get specific interview by interviewId
+const getInterviewById = async (req,res) => {
+    try {
+        const interview = await Interview.findById(
+            req.params.id
+        );
+        if (!interview) {
+            return res.status(404).json({
+                message: "Interview not found"
+            });
+        }
+        return res.status(200).json({
+            success: true,
+            interview
+        })
+    } catch (error) {
+        return res.status(500).json({
+            message: "Server Error"
+        });
+    }
+};
+// get interviews history
 const getInterviewHistory = async (req, res) => {
 
     try {
@@ -242,7 +262,11 @@ const completeInterview = async (req, res) => {
             interview.questions
         );
 
-        let parsedFeedback = {};
+        let parsedFeedback = {
+            strengths: [],
+            weaknesses: [],
+            recommendations: []
+        };
         try {
             // Remove markdown code block markers (```json and ```)
             let cleanText = feedbackText.replace(/```json\n?/g, '').replace(/```/g, '').trim();
@@ -263,7 +287,8 @@ const completeInterview = async (req, res) => {
             });
         }
 
-        interview.feedback = parsedFeedback.feedback;
+        interview.feedback = parsedFeedback;
+        await interview.save();
 
         return res.status(200).json({
             success: true,
@@ -284,6 +309,7 @@ const completeInterview = async (req, res) => {
 
 module.exports = {
     startInterview,
+    getInterviewById,
     getInterviewHistory,
     generateQuestions,
     submitAnswer,

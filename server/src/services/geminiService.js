@@ -99,17 +99,18 @@ const generateInterviewFeedback = async (questions) => {
 
     ${JSON.stringify(summary)}
 
-    Provide:
+    Provide a comprehensive assessment with:
 
-    1. Strengths
-    2. Weaknesses
-    3. Recommendations
+    1. Strengths (array of key strengths)
+    2. Weaknesses (array of areas for improvement)
+    3. Recommendations (array of actionable recommendations)
 
-    Return ONLY JSON:
+    Return ONLY JSON in this exact format:
 
     {
-    "feedback":
-    "..."
+      "strengths": ["strength 1", "strength 2"],
+      "weaknesses": ["weakness 1", "weakness 2"],
+      "recommendations": ["recommendation 1", "recommendation 2"]
     }
     `;
 

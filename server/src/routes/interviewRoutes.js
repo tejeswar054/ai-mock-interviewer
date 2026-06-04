@@ -1,6 +1,6 @@
 const express = require("express");
 const protect = require("../middleware/authMiddleware");
-const { startInterview, getInterviewHistory, generateQuestions, submitAnswer, completeInterview } = require("../controllers/interviewController");
+const { startInterview, getInterviewHistory, generateQuestions, submitAnswer, completeInterview, getInterviewById } = require("../controllers/interviewController");
 const router = express.Router();
 
 router.post(
@@ -12,6 +12,11 @@ router.get(
     "/history",
     protect,
     getInterviewHistory
+);
+router.get(
+    "/:id",
+    protect,
+    getInterviewById
 );
 router.post(
     "/:id/generate-questions",

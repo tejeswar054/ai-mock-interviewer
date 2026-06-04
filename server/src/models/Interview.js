@@ -52,8 +52,9 @@ const interviewSchema = new mongoose.Schema({
     },
 
     feedback: {
-        type: String,
-        default: ""
+        strengths: [String],
+        weaknesses: [String],
+        recommendations: [String]
     },
 
     isCompleted: {
