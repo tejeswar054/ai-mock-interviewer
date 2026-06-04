@@ -84,7 +84,46 @@ const evaluateAnswer = async (
     return response.text;
 };
 
+const generateInterviewFeedback = async (questions) => {
+
+    const summary = questions.map(q => ({
+        question: q.question,
+        answer: q.answer,
+        score: q.score
+    }));
+    const aiClient = getAIClient();
+    const prompt = `
+    You are an experienced technical interviewer.
+
+    Based on these interview results:
+
+    ${JSON.stringify(summary)}
+
+    Provide:
+
+    1. Strengths
+    2. Weaknesses
+    3. Recommendations
+
+    Return ONLY JSON:
+
+    {
+    "feedback":
+    "..."
+    }
+    `;
+
+    const response =
+    await aiClient.models.generateContent({
+        model: "gemini-2.5-flash",
+        contents: prompt
+    });
+
+    return response.text;
+};
+
 module.exports = {
     generateInterviewQuestions,
-    evaluateAnswer
+    evaluateAnswer,
+    generateInterviewFeedback
 };

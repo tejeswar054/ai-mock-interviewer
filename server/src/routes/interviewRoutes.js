@@ -1,7 +1,6 @@
 const express = require("express");
 const protect = require("../middleware/authMiddleware");
 const { startInterview, getInterviewHistory, generateQuestions, submitAnswer, completeInterview } = require("../controllers/interviewController");
-const { route } = require("./authRoutes");
 const router = express.Router();
 
 router.post(

@@ -1,5 +1,5 @@
 const Interview = require("../models/Interview");
-const { generateInterviewQuestions, evaluateAnswer } = require("../services/geminiService");
+const { generateInterviewQuestions, evaluateAnswer, generateInterviewFeedback } = require("../services/geminiService");
 
 const startInterview = async (req, res) => {
     try {
@@ -70,6 +70,11 @@ const generateQuestions = async (req, res) => {
         if (!interview) {
             return res.status(404).json({
                 message: "Interview not found"
+            });
+        }
+        if (interview.questions.length > 0){
+            return res.status(400).json({
+                message: "Questions already generated"
             });
         }
 
@@ -232,6 +237,34 @@ const completeInterview = async (req, res) => {
 
         await interview.save();
 
+        const feedbackText =
+        await generateInterviewFeedback(
+            interview.questions
+        );
+
+        let parsedFeedback = {};
+        try {
+            // Remove markdown code block markers (```json and ```)
+            let cleanText = feedbackText.replace(/```json\n?/g, '').replace(/```/g, '').trim();
+            
+            // Extract JSON object
+            const jsonMatch = cleanText.match(/\{[\s\S]*\}/);
+            if (jsonMatch) {
+                parsedFeedback = JSON.parse(jsonMatch[0]);
+            } else {
+                throw new Error("Could not find JSON object in response");
+            }
+        } catch (parseError) {
+            console.error("Failed to parse feedback JSON:", parseError);
+            console.error("Raw feedback response:", feedbackText);
+            return res.status(500).json({
+                message: "Failed to parse AI feedback",
+                error: parseError.message
+            });
+        }
+
+        interview.feedback = parsedFeedback.feedback;
+
         return res.status(200).json({
             success: true,
             interview
@@ -246,6 +279,7 @@ const completeInterview = async (req, res) => {
         });
     }
 };
+
 
 
 module.exports = {
