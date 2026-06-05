@@ -71,117 +71,250 @@ function DashboardPage() {
   };
 
   return (
-    <div>
+    <div
+      style={{
+        minHeight: "100vh",
+        background: "#f8fafc",
+        padding: "30px",
+        fontFamily: "Arial, sans-serif",
+      }}
+    >
+      {/* Header */}
 
-      <h1>
-        Welcome {user?.name}
-      </h1>
-
-      <hr />
-
-      <h2>
-        Start Interview
-      </h2>
-
-      <input
-        type="text"
-        placeholder="Enter Role"
-        value={role}
-        onChange={(e) =>
-          setRole(e.target.value)
-        }
-      />
-
-      <br />
-      <br />
-
-      <select
-        value={difficulty}
-        onChange={(e) =>
-          setDifficulty(e.target.value)
-        }
+      <div
+        style={{
+          background: "white",
+          padding: "25px",
+          borderRadius: "16px",
+          boxShadow: "0 2px 10px rgba(0,0,0,0.08)",
+          marginBottom: "30px",
+        }}
       >
-        <option value="Easy">
-          Easy
-        </option>
+        <h1
+          style={{
+            margin: 0,
+            color: "#111827",
+          }}
+        >
+          Welcome back, {user?.name}
+        </h1>
 
-        <option value="Medium">
-          Medium
-        </option>
+        <p
+          style={{
+            color: "#6b7280",
+            marginTop: "10px",
+          }}
+        >
+          Prepare for interviews and track your progress.
+        </p>
+      </div>
 
-        <option value="Hard">
-          Hard
-        </option>
-      </select>
+      {/* Stats Section */}
 
-      <br />
-      <br />
-
-      <button
-        onClick={startInterview}
+      <div
+        style={{
+          display: "grid",
+          gridTemplateColumns:
+            "repeat(auto-fit,minmax(220px,1fr))",
+          gap: "20px",
+          marginBottom: "30px",
+        }}
       >
-        Start Interview
-      </button>
+        <div style={statCard}>
+          <h3>Total Interviews</h3>
+          <h1>{interviews.length}</h1>
+        </div>
 
-      <hr />
+        <div style={statCard}>
+          <h3>Completed</h3>
+          <h1>
+            {
+              interviews.filter(
+                (i) => i.isCompleted
+              ).length
+            }
+          </h1>
+        </div>
 
-      <h2>
-        Interview History
-      </h2>
+        <div style={statCard}>
+          <h3>In Progress</h3>
+          <h1>
+            {
+              interviews.filter(
+                (i) => !i.isCompleted
+              ).length
+            }
+          </h1>
+        </div>
+      </div>
 
-      {
-        interviews.length === 0 ? (
-          <p>
+      {/* Start Interview Card */}
+
+      <div
+        style={{
+          background: "white",
+          padding: "25px",
+          borderRadius: "16px",
+          boxShadow: "0 2px 10px rgba(0,0,0,0.08)",
+          marginBottom: "30px",
+        }}
+      >
+        <h2
+          style={{
+            marginBottom: "20px",
+          }}
+        >
+          Start New Interview
+        </h2>
+
+        <input
+          type="text"
+          placeholder="Enter Role (Frontend Developer)"
+          value={role}
+          onChange={(e) =>
+            setRole(e.target.value)
+          }
+          style={{
+            width: "100%",
+            padding: "14px",
+            borderRadius: "10px",
+            border: "1px solid #d1d5db",
+            marginBottom: "20px",
+            boxSizing: "border-box",
+          }}
+        />
+
+        <select
+          value={difficulty}
+          onChange={(e) =>
+            setDifficulty(e.target.value)
+          }
+          style={{
+            width: "100%",
+            padding: "14px",
+            borderRadius: "10px",
+            border: "1px solid #d1d5db",
+            marginBottom: "20px",
+          }}
+        >
+          <option value="Easy">Easy</option>
+          <option value="Medium">Medium</option>
+          <option value="Hard">Hard</option>
+        </select>
+
+        <button
+          onClick={startInterview}
+          style={{
+            background: "#2563eb",
+            color: "white",
+            border: "none",
+            padding: "14px 28px",
+            borderRadius: "10px",
+            cursor: "pointer",
+            fontSize: "16px",
+            fontWeight: "600",
+          }}
+        >
+          Start Interview
+        </button>
+      </div>
+
+      {/* Interview History */}
+
+      <div
+        style={{
+          background: "white",
+          padding: "25px",
+          borderRadius: "16px",
+          boxShadow: "0 2px 10px rgba(0,0,0,0.08)",
+        }}
+      >
+        <h2
+          style={{
+            marginBottom: "20px",
+          }}
+        >
+          Interview History
+        </h2>
+
+        {interviews.length === 0 ? (
+          <div
+            style={{
+              textAlign: "center",
+              padding: "40px",
+              color: "#6b7280",
+            }}
+          >
             No Interviews Found
-          </p>
+          </div>
         ) : (
-          interviews.map(
-            (interview) => (
-
+          <div
+            style={{
+              display: "grid",
+              gridTemplateColumns:
+                "repeat(auto-fit,minmax(280px,1fr))",
+              gap: "20px",
+            }}
+          >
+            {interviews.map((interview) => (
               <div
                 key={interview._id}
                 style={{
-                  border: "1px solid gray",
-                  padding: "10px",
-                  marginBottom: "10px"
+                  border: "1px solid #e5e7eb",
+                  borderRadius: "14px",
+                  padding: "20px",
+                  transition: "0.3s",
+                  background: "#ffffff",
                 }}
               >
-
-                <h3>
+                <h3
+                  style={{
+                    marginTop: 0,
+                    color: "#111827",
+                  }}
+                >
                   {interview.role}
                 </h3>
 
                 <p>
-                  Difficulty:
-                  {" "}
+                  <strong>Difficulty:</strong>{" "}
                   {interview.difficulty}
                 </p>
 
                 <p>
-                  Score:
-                  {" "}
+                  <strong>Score:</strong>{" "}
                   {interview.score}
                 </p>
 
                 <p>
-                  Status:
-                  {" "}
-                  {
-                    interview.isCompleted
+                  <strong>Status:</strong>{" "}
+                  <span
+                    style={{
+                      color:
+                        interview.isCompleted
+                          ? "green"
+                          : "#f59e0b",
+                      fontWeight: "600",
+                    }}
+                  >
+                    {interview.isCompleted
                       ? "Completed"
-                      : "In Progress"
-                  }
+                      : "In Progress"}
+                  </span>
                 </p>
-
               </div>
-
-            )
-          )
-        )
-      }
-
+            ))}
+          </div>
+        )}
+      </div>
     </div>
   );
 }
+const statCard = {
+  background: "white",
+  padding: "20px",
+  borderRadius: "16px",
+  boxShadow: "0 2px 10px rgba(0,0,0,0.08)",
+};
 
 export default DashboardPage;
