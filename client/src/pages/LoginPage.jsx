@@ -5,11 +5,13 @@ import { useNavigate } from "react-router-dom";
 function LoginPage() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [loading, setLoading] = useState(false);
 
   const navigate = useNavigate();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setLoading(true);
 
     try {
       const response = await api.post("/auth/login", {
@@ -36,6 +38,8 @@ function LoginPage() {
           error.response?.data?.message || error.message
         }`
       );
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -45,7 +49,8 @@ function LoginPage() {
         minHeight: "100vh",
         display: "flex",
         background:
-          "linear-gradient(135deg, #111827, #1f2937)",
+          "linear-gradient(135deg, #667eea 0%, #764ba2 100%)",
+        fontFamily: "'Segoe UI', Tahoma, Geneva, Verdana, sans-serif",
       }}
     >
       {/* Left Side */}
@@ -61,8 +66,10 @@ function LoginPage() {
       >
         <h1
           style={{
-            fontSize: "52px",
+            fontSize: "56px",
             marginBottom: "20px",
+            fontWeight: "800",
+            lineHeight: "1.2",
           }}
         >
           Welcome Back
@@ -71,14 +78,29 @@ function LoginPage() {
         <p
           style={{
             fontSize: "20px",
-            color: "#d1d5db",
+            color: "rgba(255, 255, 255, 0.9)",
             maxWidth: "500px",
-            lineHeight: "1.7",
+            lineHeight: "1.8",
+            marginBottom: "40px",
           }}
         >
-          Continue your AI-powered interview preparation
-          and track your progress.
+          Continue your AI-powered interview preparation and track your progress towards your dream job.
         </p>
+
+        <div style={{ display: "flex", gap: "30px" }}>
+          <div>
+            <div style={{ fontSize: "32px", marginBottom: "10px" }}>🎯</div>
+            <p style={{ fontSize: "14px", color: "rgba(255, 255, 255, 0.8)" }}>Smart Practice</p>
+          </div>
+          <div>
+            <div style={{ fontSize: "32px", marginBottom: "10px" }}>📊</div>
+            <p style={{ fontSize: "14px", color: "rgba(255, 255, 255, 0.8)" }}>Real Feedback</p>
+          </div>
+          <div>
+            <div style={{ fontSize: "32px", marginBottom: "10px" }}>🚀</div>
+            <p style={{ fontSize: "14px", color: "rgba(255, 255, 255, 0.8)" }}>Get Hired</p>
+          </div>
+        </div>
       </div>
 
       {/* Right Side */}
@@ -90,6 +112,7 @@ function LoginPage() {
           justifyContent: "center",
           alignItems: "center",
           padding: "40px",
+          boxShadow: "-10px 0 40px rgba(0, 0, 0, 0.15)",
         }}
       >
         <form
@@ -101,19 +124,22 @@ function LoginPage() {
           <h2
             style={{
               marginBottom: "10px",
-              color: "#1647b1",
+              color: "#111827",
+              fontSize: "28px",
+              fontWeight: "700",
             }}
           >
-            Login
+            Sign In
           </h2>
 
           <p
             style={{
               marginBottom: "30px",
-              color: "#131416",
+              color: "#6b7280",
+              fontSize: "15px",
             }}
           >
-            Sign in to continue.
+            Access your interview preparation account.
           </p>
 
           <input
@@ -124,6 +150,7 @@ function LoginPage() {
               setEmail(e.target.value)
             }
             style={inputStyle}
+            required
           />
 
           <input
@@ -134,32 +161,38 @@ function LoginPage() {
               setPassword(e.target.value)
             }
             style={inputStyle}
+            required
           />
 
           <button
             type="submit"
-            style={buttonStyle}
+            disabled={loading}
+            style={{
+              ...buttonStyle,
+              opacity: loading ? 0.7 : 1,
+            }}
           >
-            Login
+            {loading ? "Signing in..." : "Sign In"}
           </button>
 
           <p
             style={{
               textAlign: "center",
-              marginTop: "20px",
+              marginTop: "24px",
               color: "#6b7280",
+              fontSize: "14px",
             }}
           >
             Don't have an account?{" "}
             <span
               onClick={() => navigate("/register")}
               style={{
-                color: "#2563eb",
+                color: "#667eea",
                 cursor: "pointer",
                 fontWeight: "600",
               }}
             >
-              Create Account
+              Sign Up
             </span>
           </p>
         </form>
@@ -170,26 +203,31 @@ function LoginPage() {
 
 const inputStyle = {
   width: "100%",
-  padding: "14px",
+  padding: "14px 16px",
   marginBottom: "18px",
   borderRadius: "10px",
-  border: "1px solid #d1d5db",
+  border: "1.5px solid #e5e7eb",
   fontSize: "15px",
   color: "#18181a",
   boxSizing: "border-box",
-  background: "#afc6c6"
+  background: "#f9fafb",
+  transition: "all 0.3s ease",
+  outline: "none",
+  fontFamily: "inherit",
 };
 
 const buttonStyle = {
   width: "100%",
   padding: "14px",
-  background: "#2563eb",
+  background: "linear-gradient(135deg, #667eea 0%, #764ba2 100%)",
   color: "white",
   border: "none",
   borderRadius: "10px",
   fontSize: "16px",
   fontWeight: "600",
   cursor: "pointer",
+  transition: "all 0.3s ease",
+  boxShadow: "0 4px 15px rgba(102, 126, 234, 0.4)",
 };
 
 export default LoginPage;

@@ -109,8 +109,6 @@ const generateQuestions = async (req, res) => {
         // Parse JSON from markdown code block
         let questions = [];
         try {
-            console.log("Raw questions response:", questionsText);
-            
             // Extract JSON from markdown code block (```json\n[...]\n```)
             const jsonMatch = questionsText.match(/\[[\s\S]*\]/);
             
@@ -119,9 +117,7 @@ const generateQuestions = async (req, res) => {
                 throw new Error("Could not find JSON array in response");
             }
             
-            console.log("Extracted JSON string:", jsonMatch[0]);
             questions = JSON.parse(jsonMatch[0]);
-            console.log("Parsed questions successfully:", questions);
             
         } catch (parseError) {
             console.error("Failed to parse questions JSON:", parseError.message);
@@ -283,8 +279,6 @@ const completeInterview = async (req, res) => {
             // Remove markdown code block markers (```json and ```)
             let cleanText = feedbackText.replace(/```json\n?/g, '').replace(/```/g, '').trim();
             
-            console.log("Cleaned feedback text:", cleanText);
-            
             // Try to extract and parse JSON
             let jsonMatch = cleanText.match(/\{[\s\S]*\}/);
             
@@ -294,23 +288,42 @@ const completeInterview = async (req, res) => {
             }
             
             const jsonStr = jsonMatch[0];
-            console.log("Extracted JSON string:", jsonStr);
-            
             parsedFeedback = JSON.parse(jsonStr);
-            console.log("Successfully parsed feedback:", parsedFeedback);
+            
+            // Validate that we have actual content
+            if (!parsedFeedback.strengths || !Array.isArray(parsedFeedback.strengths)) {
+                parsedFeedback.strengths = [];
+            }
+            if (!parsedFeedback.weaknesses || !Array.isArray(parsedFeedback.weaknesses)) {
+                parsedFeedback.weaknesses = [];
+            }
+            if (!parsedFeedback.recommendations || !Array.isArray(parsedFeedback.recommendations)) {
+                parsedFeedback.recommendations = [];
+            }
+            
+            // If we got empty arrays, use defaults
+            if (parsedFeedback.strengths.length === 0 && parsedFeedback.weaknesses.length === 0 && parsedFeedback.recommendations.length === 0) {
+                parsedFeedback = {
+                    strengths: ["Completed the interview", "Attempted challenging questions"],
+                    weaknesses: ["Review topics for unanswered questions", "Practice time management"],
+                    recommendations: ["Practice more technical questions", "Review weak areas", "Attempt full interviews regularly"]
+                };
+            }
+            
         } catch (parseError) {
             console.error("Failed to parse feedback JSON:", parseError.message);
             console.error("Raw feedback response:", feedbackText);
             // Return default feedback instead of failing
             parsedFeedback = {
-                strengths: ["Interview completed"],
-                weaknesses: [],
-                recommendations: ["Continue practicing with different interview questions"]
+                strengths: ["Interview completed", "Showed technical knowledge"],
+                weaknesses: ["Room for improvement on all topics", "Need more practice"],
+                recommendations: ["Continue practicing", "Review interview topics", "Take more mock interviews"]
             };
             console.log("Using default feedback due to parsing error");
         }
 
         interview.feedback = parsedFeedback;
+        interview.markModified('feedback');
         await interview.save();
 
         return res.status(200).json({

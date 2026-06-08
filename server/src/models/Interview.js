@@ -23,6 +23,21 @@ const questionSchema = new mongoose.Schema({
 
 });
 
+const feedbackSchema = new mongoose.Schema({
+    strengths: {
+        type: [String],
+        default: []
+    },
+    weaknesses: {
+        type: [String],
+        default: []
+    },
+    recommendations: {
+        type: [String],
+        default: []
+    }
+}, { _id: false });
+
 const interviewSchema = new mongoose.Schema({
 
     userId: {
@@ -52,9 +67,12 @@ const interviewSchema = new mongoose.Schema({
     },
 
     feedback: {
-        strengths: [String],
-        weaknesses: [String],
-        recommendations: [String]
+        type: feedbackSchema,
+        default: () => ({
+            strengths: [],
+            weaknesses: [],
+            recommendations: []
+        })
     },
 
     isCompleted: {

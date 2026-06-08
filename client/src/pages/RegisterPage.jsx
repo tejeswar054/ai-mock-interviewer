@@ -6,11 +6,13 @@ function RegisterPage() {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [loading, setLoading] = useState(false);
 
   const navigate = useNavigate();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setLoading(true);
 
     try {
       const response = await api.post("/auth/register", {
@@ -35,6 +37,8 @@ function RegisterPage() {
           error.response?.data?.message || error.message
         }`
       );
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -44,7 +48,8 @@ function RegisterPage() {
         minHeight: "100vh",
         display: "flex",
         background:
-          "linear-gradient(135deg, #0f172a, #1e293b)",
+          "linear-gradient(135deg, #f093fb 0%, #f5576c 100%)",
+        fontFamily: "'Segoe UI', Tahoma, Geneva, Verdana, sans-serif",
       }}
     >
       {/* Left Side */}
@@ -60,35 +65,53 @@ function RegisterPage() {
       >
         <h1
           style={{
-            fontSize: "52px",
+            fontSize: "56px",
             marginBottom: "20px",
+            fontWeight: "800",
+            lineHeight: "1.2",
           }}
         >
-          AI Mock Interviews
+          Start Your Journey
         </h1>
 
         <p
           style={{
             fontSize: "20px",
-            color: "#cbd5e1",
+            color: "rgba(255, 255, 255, 0.9)",
             maxWidth: "500px",
-            lineHeight: "1.7",
+            lineHeight: "1.8",
+            marginBottom: "40px",
           }}
         >
-          Practice interviews with AI, improve communication,
-          get detailed feedback, and land your dream job.
+          Join thousands of professionals practicing with AI and landing their dream interviews.
         </p>
+
+        <div style={{ display: "flex", gap: "30px" }}>
+          <div>
+            <div style={{ fontSize: "32px", marginBottom: "10px" }}>🤖</div>
+            <p style={{ fontSize: "14px", color: "rgba(255, 255, 255, 0.8)" }}>AI Interviewer</p>
+          </div>
+          <div>
+            <div style={{ fontSize: "32px", marginBottom: "10px" }}>💡</div>
+            <p style={{ fontSize: "14px", color: "rgba(255, 255, 255, 0.8)" }}>Learn & Improve</p>
+          </div>
+          <div>
+            <div style={{ fontSize: "32px", marginBottom: "10px" }}>✨</div>
+            <p style={{ fontSize: "14px", color: "rgba(255, 255, 255, 0.8)" }}>Free Trial</p>
+          </div>
+        </div>
       </div>
 
       {/* Right Side */}
       <div
         style={{
           width: "450px",
-          background: "#fff",
+          background: "white",
           display: "flex",
           alignItems: "center",
           justifyContent: "center",
           padding: "40px",
+          boxShadow: "-10px 0 40px rgba(0, 0, 0, 0.15)",
         }}
       >
         <form
@@ -101,6 +124,8 @@ function RegisterPage() {
             style={{
               marginBottom: "10px",
               color: "#111827",
+              fontSize: "28px",
+              fontWeight: "700",
             }}
           >
             Create Account
@@ -110,9 +135,10 @@ function RegisterPage() {
             style={{
               marginBottom: "30px",
               color: "#6b7280",
+              fontSize: "15px",
             }}
           >
-            Start your interview preparation journey.
+            Start your interview preparation today.
           </p>
 
           <input
@@ -123,6 +149,7 @@ function RegisterPage() {
               setName(e.target.value)
             }
             style={inputStyle}
+            required
           />
 
           <input
@@ -133,6 +160,7 @@ function RegisterPage() {
               setEmail(e.target.value)
             }
             style={inputStyle}
+            required
           />
 
           <input
@@ -143,32 +171,38 @@ function RegisterPage() {
               setPassword(e.target.value)
             }
             style={inputStyle}
+            required
           />
 
           <button
             type="submit"
-            style={buttonStyle}
+            disabled={loading}
+            style={{
+              ...buttonStyle,
+              opacity: loading ? 0.7 : 1,
+            }}
           >
-            Create Account
+            {loading ? "Creating account..." : "Create Account"}
           </button>
 
           <p
             style={{
               textAlign: "center",
-              marginTop: "20px",
+              marginTop: "24px",
               color: "#6b7280",
+              fontSize: "14px",
             }}
           >
             Already have an account?{" "}
             <span
               onClick={() => navigate("/login")}
               style={{
-                color: "#2563eb",
+                color: "#f5576c",
                 cursor: "pointer",
                 fontWeight: "600",
               }}
             >
-              Login
+              Sign In
             </span>
           </p>
         </form>
@@ -179,26 +213,31 @@ function RegisterPage() {
 
 const inputStyle = {
   width: "100%",
-  padding: "14px",
+  padding: "14px 16px",
   marginBottom: "18px",
   borderRadius: "10px",
-  border: "1px solid #d1d5db",
+  border: "1.5px solid #e5e7eb",
   color: "#18181a",
   fontSize: "15px",
   boxSizing: "border-box",
-  background: "#afc6c6"
+  background: "#f9fafb",
+  transition: "all 0.3s ease",
+  outline: "none",
+  fontFamily: "inherit",
 };
 
 const buttonStyle = {
   width: "100%",
   padding: "14px",
-  background: "#2563eb",
+  background: "linear-gradient(135deg, #f093fb 0%, #f5576c 100%)",
   color: "white",
   border: "none",
   borderRadius: "10px",
   fontSize: "16px",
   fontWeight: "600",
   cursor: "pointer",
+  transition: "all 0.3s ease",
+  boxShadow: "0 4px 15px rgba(245, 87, 108, 0.4)",
 };
 
 export default RegisterPage;
